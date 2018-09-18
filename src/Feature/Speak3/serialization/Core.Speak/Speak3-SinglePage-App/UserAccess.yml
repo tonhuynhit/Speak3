@@ -1,0 +1,14 @@
+﻿---
+ID: "c4dfe5bb-c7ff-4619-9e96-a9e36fe737f0"
+Parent: "42ae4a6d-c548-466a-87fa-d63141bce0ec"
+Template: "7545d746-41c2-4eb7-a682-55895eab30ad"
+Path: "/sitecore/client/Applications/Speak3-SinglePage-App/UserAccess"
+DB: core
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180918T064300Z

@@ -1,0 +1,14 @@
+﻿---
+ID: "1cccae46-60a5-435c-a19d-8b7cdb06df75"
+Parent: "42ae4a6d-c548-466a-87fa-d63141bce0ec"
+Template: "36dd4494-a899-45ae-b1e1-689e4f2d663a"
+Path: "/sitecore/client/Applications/Speak3-SinglePage-App/Translations"
+DB: core
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180918T064314Z

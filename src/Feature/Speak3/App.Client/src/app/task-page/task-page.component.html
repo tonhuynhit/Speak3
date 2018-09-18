@@ -1,0 +1,116 @@
+<sc-page>
+  <div scPageHeader>
+    <sc-global-header [appName]="'APP_NAME' | translate">
+      <a href="#" scGlobalLogo></a>
+      <!-- AccountInformation gets accountName and accountImageUrl automatically from Sitecore context which is configured in AppModule -->
+      <sc-account-information (logout)="logoutService.logout()"></sc-account-information>
+    </sc-global-header>
+  </div>
+  <div scPageAppHeader>
+    <sc-application-header [text]="'TASK_PAGE' | translate" class="applicationheader"></sc-application-header>
+  </div>
+  <div scPageActionBar>
+    <sc-action-bar>
+      <sc-action-bar-left>
+        <sc-back-button></sc-back-button>
+      </sc-action-bar-left>
+      <sc-action-bar-right>
+        <button type="button" scIconButton [(scToggle)]="isEditing">
+          <sc-icon size="small" icon="context_toggle"></sc-icon>
+        </button>
+      </sc-action-bar-right>
+    </sc-action-bar>
+  </div>
+
+  <article scPageContent class="p-3">
+    <!-- Fetch items -->
+    <div class="card mb-3">
+      <div class="card-block">
+        <h4 class="card-title">Fetch item from Sitecore</h4>
+        <p class="card-text">When logged in, fetching the item, will display the item details. Open another tab and log out, then press the fetch
+          button again in this tab. You will notice how the page will refresh and redirect to the Sitecore login page. This
+          is is the <code>SciAuthHttp</code> module kicking in.</p>
+        <p class="card-text">The fetch button will be disabled during the process of the request.</p>
+        <p class="card-text">Click the edit button to open the item in the Context area and modify its fields.</p>
+        <div class="list-group mb-2" *ngIf="response">
+          <div *ngFor="let key of objectKeys(response)" href="#" class="list-group-item flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{ key }}</h5>
+            </div>
+            <p class="mb-1 table-contents">{{ response[key] }}</p>
+          </div>
+        </div>
+        <div class="float-right">
+          <button [disabled]="isEditDisabled()" scButton (click)="edit()">
+            <sc-icon size="small" icon="pencil"></sc-icon> {{ 'EDIT' | translate }}
+          </button>
+          <button [disabled]="isLoading" scButton="primary" (click)="fetchItem()">
+            {{ 'FETCH_SAMPLE_ITEM' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- User access (SciAuthModule) -->
+    <div class="card mb-3">
+      <div class="card-block">
+        <h4 class="card-title">Applying Sitecore security rights on UI components</h4>
+        <p class="card-text">In Sitecore, the Security Editor can be used to restrict access permissions to users or roles. The <code>SciAuthModule</code>          can read these access settings so that they can be used in Angular.</p>
+        <p class="card-text">Some information (text) in this section, has been hidden to users in the Developer role, as they don't have read
+          access to it. There are also two form fields where the Developer users don't have write permission, which means
+          the two fields are disabled. Try logining in with a developer user and an admin user and compare the two pages.</p>
+        <p class="card-text grass-xx-dark" *ngIf="authService.hasRead('SomeInfoHiddenToDevs') | async"><em>Trust me, I am not a developer.</em></p><br>
+        <p class="card-text">The form below contains two fields that are disabled for developer users, as they don't have write permissions.</p>
+        <div class="p-3 bg-banana-xxx-light">
+          <div class="form-group">
+            <label for="exampleInputPassword1">{{ 'DISABLEABLE_TEXT_FIELD' | translate }}</label>
+            <input type="text" class="form-control" [placeholder]="'THIS_FIELD_IS_DISABLED_TO_DEV_USERS' | translate" [disabled]="!(authService.hasWrite('SomeFieldDisabledToDevs') | async)"><br>
+          </div>
+          <button scButton [disabled]="!(authService.hasWrite('OtherFieldDisabledToDevs') | async)">{{ 'DISABLEABLE_BUTTON' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <aside scPageContext [show]="isEditing" class="bg-basic-white">
+    <div class="p-3">
+      <!-- Anti-CSRF -->
+      <h4>Anti-CSRF</h4>
+      <p>
+        Edit the fields and click save to save the changes back in Sitecore. The API endpoint is secured with Anti-CSRF; because
+        this application imports the <code>NgScModule</code>, all http requests automatically include the required
+        Anti-CSRF headers. Open the DevTools in the browser and check that the http request to edit the item includes the
+        <code>X-RequestVerificationToken</code>.
+      </p>
+      <form (ngSubmit)="saveItem()" #itemForm="ngForm" *ngIf="sampleItem">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" [(ngModel)]="sampleItem.Name" name="name">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea class="form-control" id="description" rows="7" [(ngModel)]="sampleItem.Description" name="description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="fielda">Field A</label>
+          <input type="text" class="form-control" id="fielda" [(ngModel)]="sampleItem.FieldA" name="fielda">
+        </div>
+        <div class="form-group">
+          <label for="fieldb">Field B</label>
+          <input type="text" class="form-control" id="fieldb" [(ngModel)]="sampleItem.FieldB" name="fieldb">
+        </div>
+        <div class="float-right">
+          <button scButton (click)="close()">
+          {{ 'CLOSE' | translate }}
+        </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!itemForm.form.valid">
+          {{ 'SAVE_CHANGES' | translate }}
+        </button>
+        </div>
+      </form>
+      <div class="p-3 bg-tomato-xxx-light" *ngIf="!sampleItem">
+        Something went wrong: The item to edit is not defined. Try to fetch the item again.
+      </div>
+    </div>
+  </aside>
+</sc-page>

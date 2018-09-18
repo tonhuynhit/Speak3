@@ -1,0 +1,20 @@
+<sc-page [showNav]="isNavigationShown">
+  <div scPageHeader>
+    <sc-global-header [appName]="'APP_NAME' | translate" [(show)]="isNavigationShown">
+      <a href="#" scGlobalLogo></a>
+      <!-- AccountInformation gets accountName and accountImageUrl automatically from Sitecore context which is configured in AppModule -->
+      <sc-account-information (logout)="logoutService.logout()"></sc-account-information>
+    </sc-global-header>
+  </div>
+  <aside scPageNav>
+    <nav>
+      <a routerLink="/taskpage" class="navlink">{{ 'TASK_PAGE' | translate }}</a>
+    </nav>
+  </aside>
+  <div scPageAppHeader>
+    <sc-application-header [text]="'DASHBOARD_PAGE' | translate"></sc-application-header>
+  </div>
+  <article scPageContent>
+    <p>Page contents..</p>
+  </article>
+</sc-page>
